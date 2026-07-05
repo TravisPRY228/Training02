@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BrBrPatapim — Барбершоп</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#171310;
+    --ink-soft:#2a231d;
+    --cream:#f2e9d8;
+    --cream-dim:#cabfa9;
+    --brass:#b6874a;
+    --brass-bright:#d7a35f;
+    --red:#8f2a24;
+    --line: rgba(242,233,216,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Work Sans', sans-serif;
+    font-weight:400;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    line-height:0.95;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--brass-bright);
+  }
+  a{color:inherit; text-decoration:none;}
+  img.ph{display:block;}
+
+  /* ---------- placeholder rectangle ---------- */
+  .ph{
+    background:#f5f1e8;
+    border:1px solid rgba(0,0,0,0.08);
+    width:100%;
+    height:100%;
+    min-height:100px;
+    position:relative;
+    overflow:hidden;
+  }
+  .ph::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(135deg, transparent 47%, rgba(0,0,0,0.05) 50%, transparent 53%);
+  }
+  .ph::after{
+    content: attr(data-label);
+    position:absolute;
+    bottom:10px;
+    left:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.65rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:rgba(0,0,0,0.32);
+  }
+
+  /* ---------- header ---------- */
+  header{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 5vw;
+    background:linear-gradient(to bottom, rgba(23,19,16,0.92), rgba(23,19,16,0));
+    transition:background 0.3s ease, padding 0.3s ease;
+  }
+  header.scrolled{
+    background:var(--ink);
+    padding:14px 5vw;
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-family:'Anton', sans-serif;
+    font-size:1.3rem;
+    letter-spacing:0.02em;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .logo .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:conic-gradient(var(--red) 0deg 90deg, var(--cream) 90deg 180deg, var(--ink-soft) 180deg 270deg, var(--brass) 270deg 360deg);
+  }
+  nav{display:flex; gap:2.4rem;}
+  nav a{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+    position:relative;
+    padding-bottom:4px;
+  }
+  nav a:hover{color:var(--cream);}
+  nav a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:0;
+    width:0%; height:1px;
+    background:var(--brass-bright);
+    transition:width 0.25s ease;
+  }
+  nav a:hover::after{width:100%;}
+  .book-btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    border:1px solid var(--brass);
+    padding:10px 18px;
+    color:var(--cream);
+    transition:background 0.25s ease, color 0.25s ease;
+  }
+  .book-btn:hover{background:var(--brass); color:var(--ink);}
+  .nav-toggle{display:none;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:140px 5vw 80px;
+    position:relative;
+    background:
+      radial-gradient(ellipse 80% 60% at 80% 10%, rgba(143,42,36,0.18), transparent 60%),
+      var(--ink);
+  }
+  .stripe-wrap{
+    position:absolute;
+    top:0; right:0; bottom:0;
+    width:38%;
+    overflow:hidden;
+    opacity:0.9;
+    pointer-events:none;
+  }
+  .stripes{
+    position:absolute;
+    top:-20%; left:-40%;
+    width:180%; height:160%;
+    background:repeating-linear-gradient(
+      55deg,
+      var(--red) 0 26px,
+      var(--cream) 26px 52px,
+      var(--ink-soft) 52px 78px,
+      var(--brass) 78px 104px
+    );
+    animation: slide 14s linear infinite;
+    mask-image: linear-gradient(to left, black 0%, black 40%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, black 0%, black 40%, transparent 100%);
+  }
+  @keyframes slide{
+    from{ transform: translateY(0); }
+    to{ transform: translateY(104px); }
+  }
+  .hero-eyebrow{margin-bottom:20px;}
+  .hero h1{
+    font-size:clamp(3.4rem, 10vw, 8.2rem);
+    max-width:14ch;
+  }
+  .hero h1 span{color:var(--brass-bright);}
+  .hero-sub{
+    margin-top:28px;
+    max-width:34ch;
+    font-size:1.08rem;
+    color:var(--cream-dim);
+    line-height:1.6;
+  }
+  .hero-cta{
+    margin-top:44px;
+    display:flex;
+    gap:16px;
+    align-items:center;
+  }
+  .btn-primary{
+    background:var(--red);
+    color:var(--cream);
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    padding:16px 30px;
+    border:1px solid var(--red);
+    transition:background 0.25s ease, transform 0.2s ease;
+  }
+  .btn-primary:hover{background:#a63329; transform:translateY(-2px);}
+  .btn-ghost{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.78rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+    border-bottom:1px solid var(--line);
+    padding-bottom:4px;
+  }
+  .btn-ghost:hover{color:var(--cream); border-color:var(--brass-bright);}
+  .scroll-note{
+    position:absolute;
+    bottom:36px; left:5vw;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-note .ln{width:34px; height:1px; background:var(--cream-dim);}
+
+  /* ---------- section shell ---------- */
+  section{
+    padding:120px 5vw;
+    border-top:1px solid var(--line);
+  }
+  .sec-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:2rem;
+    margin-bottom:64px;
+    flex-wrap:wrap;
+  }
+  .sec-head h2{font-size:clamp(2.2rem, 5vw, 3.6rem);}
+  .sec-head p{
+    max-width:36ch;
+    color:var(--cream-dim);
+    font-size:0.98rem;
+    line-height:1.6;
+  }
+
+  /* ---------- about ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:70px;
+    align-items:center;
+  }
+  .about-img{aspect-ratio:4/5;}
+  .about-text p{
+    color:var(--cream-dim);
+    font-size:1.05rem;
+    line-height:1.75;
+    margin-bottom:22px;
+    max-width:46ch;
+  }
+  .about-text strong{color:var(--cream); font-weight:600;}
+  .stat-row{
+    display:flex;
+    gap:48px;
+    margin-top:40px;
+    padding-top:34px;
+    border-top:1px solid var(--line);
+  }
+  .stat-num{
+    font-family:'Anton', sans-serif;
+    font-size:2.4rem;
+    color:var(--brass-bright);
+    line-height:1;
+  }
+  .stat-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+    margin-top:8px;
+  }
+
+  /* ---------- services / price board ---------- */
+  .board{
+    background:var(--ink-soft);
+    border:1px solid var(--line);
+    padding:56px;
+  }
+  .board-col{
+    display:flex;
+    flex-direction:column;
+  }
+  .price-row{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    padding:20px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .price-row:first-child{padding-top:0;}
+  .price-name{font-size:1.15rem; font-weight:500;}
+  .price-desc{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.72rem;
+    color:var(--cream-dim);
+    display:block;
+    margin-top:4px;
+    letter-spacing:0.02em;
+  }
+  .price-leader{
+    flex:1;
+    border-bottom:1px dotted var(--cream-dim);
+    margin:0 6px;
+    transform:translateY(-6px);
+    opacity:0.4;
+  }
+  .price-num{
+    font-family:'Anton', sans-serif;
+    font-size:1.5rem;
+    color:var(--brass-bright);
+    white-space:nowrap;
+  }
+  .services-cols{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 60px;
+  }
+
+  /* ---------- gallery ---------- */
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    grid-auto-rows:280px;
+    gap:2px;
+  }
+  .gallery-grid .ph{min-height:0; height:100%;}
+  .gallery-grid > div:nth-child(1){grid-column:span 2;}
+  .gallery-grid > div:nth-child(4){grid-row:span 1;}
+  .gallery-grid > div:nth-child(5){grid-column:span 2;}
+
+  /* ---------- team ---------- */
+  .team-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:36px;
+  }
+  .team-card .ph{aspect-ratio:3/4; min-height:0;}
+  .team-card{display:flex; flex-direction:column;}
+  .team-name{
+    margin-top:20px;
+    font-family:'Anton', sans-serif;
+    font-size:1.3rem;
+    text-transform:uppercase;
+  }
+  .team-role{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--brass-bright);
+    margin-top:6px;
+  }
+
+  /* ---------- hours / visit ---------- */
+  .visit{
+    background:var(--red);
+    color:var(--cream);
+  }
+  .visit-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:70px;
+    align-items:center;
+  }
+  .hours-list{margin-top:28px;}
+  .hours-row{
+    display:flex;
+    justify-content:space-between;
+    padding:14px 0;
+    border-bottom:1px solid rgba(242,233,216,0.25);
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.85rem;
+    letter-spacing:0.04em;
+  }
+  .visit-img{aspect-ratio:5/4;}
+  .addr{margin-top:28px; line-height:1.7; font-size:1.02rem;}
+
+  /* ---------- footer ---------- */
+  footer{
+    padding:60px 5vw 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:30px;
+  }
+  .foot-left .logo{margin-bottom:14px;}
+  .foot-left p{color:var(--cream-dim); font-size:0.9rem; max-width:32ch;}
+  .foot-links{display:flex; gap:34px;}
+  .foot-col h4{
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--brass-bright);
+    margin-bottom:12px;
+  }
+  .foot-col a{
+    display:block;
+    color:var(--cream-dim);
+    font-size:0.88rem;
+    margin-bottom:8px;
+  }
+  .foot-col a:hover{color:var(--cream);}
+  .foot-bottom{
+    width:100%;
+    margin-top:40px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    font-family:'JetBrains Mono', monospace;
+    font-size:0.68rem;
+    color:var(--cream-dim);
+    letter-spacing:0.05em;
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    nav{display:none;}
+    .about-grid, .visit-grid{grid-template-columns:1fr;}
+    .services-cols{grid-template-columns:1fr;}
+    .team-grid{grid-template-columns:repeat(2, 1fr);}
+    .gallery-grid{grid-template-columns:repeat(2, 1fr); grid-auto-rows:200px;}
+    .gallery-grid > div:nth-child(1),
+    .gallery-grid > div:nth-child(5){grid-column:span 2;}
+    .stripe-wrap{width:60%; opacity:0.5;}
+    .board{padding:30px;}
+  }
+  @media (max-width:560px){
+    .team-grid{grid-template-columns:1fr 1fr;}
+    section{padding:80px 6vw;}
+    .board{padding:22px;}
+    footer{padding:50px 6vw 30px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .stripes{animation:none;}
+    .reveal{transition:none; opacity:1; transform:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <a href="#top" class="logo"><span class="dot"></span> BrBrPatapim</a>
+  <nav>
+    <a href="#about">О нас</a>
+    <a href="#services">Услуги</a>
+    <a href="#gallery">Галерея</a>
+    <a href="#team">Мастера</a>
+    <a href="#visit">Контакты</a>
+  </nav>
+  <a href="#visit" class="book-btn">Записаться</a>
+</header>
+
+<section class="hero" id="top">
+  <div class="stripe-wrap"><div class="stripes"></div></div>
+  <div class="hero-eyebrow eyebrow">Барбершоп · с 2019</div>
+  <h1>Стрижка —<br>это <span>ритуал</span>,<br>не процедура</h1>
+  <p class="hero-sub">BrBrPatapim — место, где чёткая линия и хорошая беседа ценятся одинаково высоко. Приходите за стрижкой, оставайтесь ради атмосферы.</p>
+  <div class="hero-cta">
+    <a href="#visit" class="btn-primary">Записаться на стрижку</a>
+    <a href="#services" class="btn-ghost">Смотреть услуги</a>
+  </div>
+  <div class="scroll-note"><span class="ln"></span> Листайте вниз</div>
+</section>
+
+<section id="about">
+  <div class="about-grid">
+    <div class="about-img reveal"><div class="ph" data-label="фото / интерьер"></div></div>
+    <div class="about-text reveal">
+      <div class="eyebrow" style="margin-bottom:18px;">О барбершопе</div>
+      <h2 style="font-size:clamp(2rem,4vw,3rem); margin-bottom:26px;">Своё дело,<br>свои правила</h2>
+      <p>BrBrPatapim начинался с одного кресла и одной бритвы в маленьком подвале. Сегодня это команда мастеров, которые относятся к ремеслу серьёзно, а к клиентам — по-дружески.</p>
+      <p>Мы не гонимся за трендами ради трендов: <strong>каждая стрижка подбирается под форму лица, структуру волос и то, как вы живёте</strong> — а не под картинку из интернета.</p>
+      <div class="stat-row">
+        <div>
+          <div class="stat-num">6</div>
+          <div class="stat-label">лет на районе</div>
+        </div>
+        <div>
+          <div class="stat-num">5</div>
+          <div class="stat-label">мастеров</div>
+        </div>
+        <div>
+          <div class="stat-num">12k+</div>
+          <div class="stat-label">стрижек сделано</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="sec-head reveal">
+    <h2>Прайс-лист</h2>
+    <p>Фиксированные цены, без сюрпризов на кассе. Каждая услуга включает укладку и чашку кофе.</p>
+  </div>
+  <div class="board reveal">
+    <div class="services-cols">
+      <div class="board-col">
+        <div class="price-row">
+          <div>
+            <div class="price-name">Классическая стрижка</div>
+            <span class="price-desc">ножницы + машинка</span>
+          </div>
+          <div class="price-leader"></div>
+          <div class="price-num">700 ₴</div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="price-name">Стрижка + борода</div>
+            <span class="price-desc">полный комплект</span>
+          </div>
+          <div class="price-leader"></div>
+          <div class="price-num">1000 ₴</div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="price-name">Оформление бороды</div>
+            <span class="price-desc">триммер + бритва</span>
+          </div>
+          <div class="price-leader"></div>
+          <div class="price-num">450 ₴</div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="price-name">Королевское бритьё</div>
+            <span class="price-desc">горячее полотенце</span>
+          </div>
+          <div class="price-leader"></div>
+          <div class="price-num">550 ₴</div>
+        </div>
+      </div>
+      <div class="board-col">
+        <div class="price-row">
+          <div>
+            <div class="price-name">Детская стрижка</div>
+            <span class="price-desc">до 12 лет</span>
+          </div>
+          <div class="price-leader"></div>
+          <div class="price-num">500 ₴</div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="price-name">Камуфляж седины</div>
+            <span class="price-desc">тонировка</span>
+          </div>
+          <div class="price-leader"></div>
+          <div class="price-num">650 ₴</div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="price-name">Уход за кожей головы</div>
+            <span class="price-desc">пилинг + массаж</span>
+          </div>
+          <div class="price-leader"></div>
+          <div class="price-num">400 ₴</div>
+        </div>
+        <div class="price-row">
+          <div>
+            <div class="price-name">Полный комплект</div>
+            <span class="price-desc">стрижка + борода + уход</span>
+          </div>
+          <div class="price-leader"></div>
+          <div class="price-num">1400 ₴</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="sec-head reveal">
+    <h2>Галерея</h2>
+    <p>Немного из того, чем мы гордимся — интерьер, работы мастеров, атмосфера.</p>
+  </div>
+  <div class="gallery-grid reveal">
+    <div><div class="ph" data-label="фото 01"></div></div>
+    <div><div class="ph" data-label="фото 02"></div></div>
+    <div><div class="ph" data-label="фото 03"></div></div>
+    <div><div class="ph" data-label="фото 04"></div></div>
+    <div><div class="ph" data-label="фото 05"></div></div>
+  </div>
+</section>
+
+<section id="team">
+  <div class="sec-head reveal">
+    <h2>Мастера</h2>
+    <p>Каждый со своим почерком — от строгой классики до дерзких форм.</p>
+  </div>
+  <div class="team-grid reveal">
+    <div class="team-card">
+      <div class="ph" data-label="фото"></div>
+      <div class="team-name">Данило</div>
+      <div class="team-role">Основатель · классика</div>
+    </div>
+    <div class="team-card">
+      <div class="ph" data-label="фото"></div>
+      <div class="team-name">Артем</div>
+      <div class="team-role">Фейды и текстуры</div>
+    </div>
+    <div class="team-card">
+      <div class="ph" data-label="фото"></div>
+      <div class="team-name">Максим</div>
+      <div class="team-role">Борода и бритьё</div>
+    </div>
+    <div class="team-card">
+      <div class="ph" data-label="фото"></div>
+      <div class="team-name">Олег</div>
+      <div class="team-role">Детские стрижки</div>
+    </div>
+  </div>
+</section>
+
+<section id="visit" class="visit">
+  <div class="visit-grid">
+    <div class="reveal">
+      <div class="eyebrow" style="color:var(--cream);">Ждём вас</div>
+      <h2 style="font-size:clamp(2rem,4vw,3rem); margin-top:14px;">Заходите без записи<br>или бронируйте кресло</h2>
+      <div class="hours-list">
+        <div class="hours-row"><span>Пн — Пт</span><span>10:00 — 21:00</span></div>
+        <div class="hours-row"><span>Сб</span><span>10:00 — 19:00</span></div>
+        <div class="hours-row"><span>Вс</span><span>Выходной</span></div>
+      </div>
+      <div class="addr">
+        ул. Хрещатик, 24, Киев<br>
+        +38 (099) 123-45-67<br>
+        hello@brbrpatapim.shop
+      </div>
+    </div>
+    <div class="visit-img reveal"><div class="ph" data-label="карта / вход"></div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-left">
+    <a href="#top" class="logo"><span class="dot"></span> BrBrPatapim</a>
+    <p>Барбершоп, где чёткая линия ценится так же, как хорошая беседа.</p>
+  </div>
+  <div class="foot-links">
+    <div class="foot-col">
+      <h4>Навигация</h4>
+      <a href="#about">О нас</a>
+      <a href="#services">Услуги</a>
+      <a href="#gallery">Галерея</a>
+    </div>
+    <div class="foot-col">
+      <h4>Соцсети</h4>
+      <a href="#">Instagram</a>
+      <a href="#">Telegram</a>
+      <a href="#">TikTok</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 BrBrPatapim</span>
+    <span>Сделано с бритвой в руке</span>
+  </div>
+</footer>
+
+<script>
+  // header background on scroll
+  const header = document.getElementById('siteHeader');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
